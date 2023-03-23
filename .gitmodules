@@ -1,0 +1,3 @@
+[submodule "objective_evaluation/bam-q"]
+	path = objective_evaluation/bam-q
+	url = https://gitlab.uni-oldenburg.de/kuxo2262/bam-q

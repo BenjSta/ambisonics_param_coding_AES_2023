@@ -1,0 +1,12 @@
+*.pyc
+generate_stimuli/rendered_audio*/*
+!generate_stimuli/rendered_audio*/README.md
+generate_stimuli/source_audio/ebu_sqam/*
+!generate_stimuli/source_audio/ebu_sqam/README.md
+generate_stimuli/vst_plugins/Harpex-X.dll
+vst_plugins/*
+!vst_plugins/README.md
+objective_evaluation/pemo-q
+!objective_evaluation/pemo-q/README.md
+!objective_evaluation/pemo-q/compute_psm_t.m
+

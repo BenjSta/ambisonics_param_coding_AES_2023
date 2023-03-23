@@ -1,0 +1,7 @@
+numpy
+librosa
+pyroomacoustics
+soundfile
+sounddevice
+spaudiopy
+dawdreamer
