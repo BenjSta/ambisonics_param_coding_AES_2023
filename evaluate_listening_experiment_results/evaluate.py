@@ -21,13 +21,13 @@ rev_scen_names = []
 for r in rev_names:
     for s in scen_names:
         rev_scen_names.append(r + '_' + s)
-dfbamq = pd.read_csv('../objective_evaluation/bamq.csv', delimiter=' ')
+dfbamq = pd.read_csv('C:/Users/p3567/Desktop/webMUSHRA/bamq.csv', delimiter=' ')
 dfbamq.index = rev_scen_names
 #dfbamq = pd.DataFrame(dfbamq, dfbamq.reindex(index=rev_scen_names)
-dfpsmt = pd.read_csv('../objective_evaluation/psmt.csv', delimiter=' ')
+dfpsmt = pd.read_csv('C:/Users/p3567/Desktop/webMUSHRA/psmt.csv', delimiter=' ')
 dfpsmt.index = rev_scen_names
 #dfpsmt.reindex(index=rev_scen_names, copy=False)
-df = pd.read_csv('webmushra_results.csv')
+df = pd.read_csv('evaluate_listening_experiment_results/webmushra_results.csv')
 df['subject'] = np.arange(df.shape[0]) // 104
 
 plt.rc('font', size=8)
@@ -35,11 +35,18 @@ bamq_color = 'k'
 psmt_color = 'k'
 rev_colors = ['#42a4f5', '#9c42f5', '#f542b3']
 #plt.figure()
+
+m_trial_rats_all = []
+m_pemoq_all = []
+m_bamq_all = []
+m_reverb_all = []
+
 for scen_ind, scenario in enumerate(scen_names):
     plt.figure(figsize=(9, 2))
 
     handles = []
     reverbs = []
+
 
     for rev_ind, reverb in enumerate(rev_names):
         TRIAL = scenario + '_' + reverb
@@ -55,8 +62,26 @@ for scen_ind, scenario in enumerate(scen_names):
 
             trial_rats = np.stack(rat_all, axis=0)
 
-            psmt_trial = dfpsmt.loc[reverb + '_' + scenario].to_numpy()
+
+
+            
             bamq_trial = dfbamq.loc[reverb + '_' + scenario].to_numpy()
+
+            psmt_trial = dfpsmt.iloc[scen_ind + rev_ind * 5].to_numpy() / 100
+            psmt_odg = (np.clip(-0.22 / (psmt_trial - 0.98) - 4.13, a_min=-4, a_max=np.Inf) * (psmt_trial < 0.864) + \
+                (16.4 * psmt_trial - 16.4) *  (psmt_trial >= 0.864)) * 25 + 100
+            
+            bamq_trial = dfbamq.iloc[scen_ind + rev_ind * 5].to_numpy()
+
+            m_trial_rats = np.mean(trial_rats[:-1, :], axis=1)
+            m_trial_rats_all.append(m_trial_rats)
+            m_pemoq_all.append(psmt_odg)
+            m_bamq_all.append(bamq_trial)
+            m_reverb_all += 7 * [reverb]
+
+            # rpemo = np.corrcoef(m_trial_rats, psmt_trial)
+            # rbamq = np.corrcoef(m_trial_rats, bamq_trial)
+            # print(scenario, reverb, rpemo[0, 1], rbamq[0, 1])
 
             for i in range(trial_rats.shape[0]):
                 m = np.median(trial_rats[i, :])
@@ -99,7 +124,7 @@ for scen_ind, scenario in enumerate(scen_names):
                                   markerfacecolor='none',
                                   alpha=0.7)
                     h3 = plt.plot(i + (shift - 1) / 5,
-                                  psmt_trial[i],
+                                  psmt_odg[i],
                                   'x',
                                   color=psmt_color,
                                   markersize=4.5,
@@ -117,7 +142,7 @@ for scen_ind, scenario in enumerate(scen_names):
 
     plt.ylim([-10, 110])
     plt.xlim([-0.5, 7.5])
-    plt.ylabel('score')
+    plt.ylabel('similarity')
     plt.grid(True)
     plt.xticks(np.arange(len(condnames)), condnames)
     plt.tight_layout()
@@ -128,13 +153,32 @@ for scen_ind, scenario in enumerate(scen_names):
     if scenario == 'speech+noise':
         plt.figure(figsize=(7, 0.4))
         plt.legend(handles,
-                   reverbs + ['BAM-Q', 'PEMO-Q PSMt' + r'$\, \cdot 100$'],
+                   reverbs + ['BAM-Q', 'PEMO-Q ODG' + r'$\, \cdot 25 + 100$'],
                    ncol=5,
                    columnspacing=1.6)
         ax = plt.gca()
         ax.axis('off')
-        plt.savefig('C:/Users/p3567/Desktop/webMUSHRA/' + 'legend' + '.pdf',
+        plt.savefig(os.path.join(figure_dir, 'legend' + '.pdf'),
                     bbox_inches='tight')
+
+def r_sq(data, model):
+    return 1 - np.mean((model - data)**2) / np.mean((data - np.mean(data))**2)
+
+m_bamq_all = np.concatenate(m_bamq_all, axis=0)
+m_trial_rats_all = np.concatenate(m_trial_rats_all, axis=0)
+m_pemoq_all = np.concatenate(m_pemoq_all, axis=0)
+m_reverb_all = np.array(m_reverb_all)
+r_pemoq_total = np.corrcoef(m_trial_rats_all, m_pemoq_all)
+r_bamq_total = np.corrcoef(m_trial_rats_all, m_bamq_all)
+r_pemoq_anech =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'anech'], m_pemoq_all[m_reverb_all == 'anech'])
+r_bamq_anech =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'anech'], m_bamq_all[m_reverb_all == 'anech'])
+r_pemoq_medrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'medrev'], m_pemoq_all[m_reverb_all == 'medrev'])
+r_bamq_medrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'medrev'], m_bamq_all[m_reverb_all == 'medrev'])
+r_pemoq_strongrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'strongrev'], m_pemoq_all[m_reverb_all == 'strongrev'])
+r_bamq_strongrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'strongrev'], m_bamq_all[m_reverb_all == 'strongrev'])
+
+
+
 
 YLIM_ABS = [-65, 10]
 YLIM_D = [-1.5, 0.75]
@@ -342,8 +386,8 @@ for comparison_labels in COMPARISON_LABELS_ALL:
 
                 trial_rats = np.stack(rat_all, axis=0)
 
-                psmt_trial = dfpsmt.iloc[scen_ind + rev_ind * 5].to_numpy()
-                bamq_trial = dfbamq.iloc[scen_ind + rev_ind * 5].to_numpy()
+                
+
                 comparison = (trial_rats[np.array(condnames) == comparison_labels[0], :] - \
                     trial_rats[np.array(condnames) == comparison_labels[1], :])[0, :]
 

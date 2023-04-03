@@ -297,10 +297,10 @@ if __name__ == '__main__':
             elif scenario == 'speech+noise':
                 s1, _ = soundfile.read('source_audio/ebu_sqam/52_cut.wav')
                 fan, _ = soundfile.read(
-                    'source_audio/Freesound/594984__hdomst__fan-noise_cut.wav')
+                    'source_audio/freesound/594984__hdomst__fan-noise_cut.wav')
                 s2, _ = soundfile.read('source_audio/ebu_sqam/53_cut.wav')
                 keyboard, _ = soundfile.read(
-                    'source_audio/Freesound/489423__samsterbirdies__typing-on-a-keyboard_cut.wav'
+                    'source_audio/freesound/489423__samsterbirdies__typing-on-a-keyboard_cut.wav'
                 )
                 signals = np.stack([s1, fan, s2, keyboard], -1)
                 directions = np.pi / 180 * np.array([[-135, 90], [-45, 120],

@@ -1,0 +1,1 @@
+This folder contains the code for computing the objective metrics. Note that additional Matlab source files are required for PEMO-Q; find further instructions in the folder "pemo-q/". Note that the scripts "compute_bamq_listening_exp.m" and "compute_pemoq_listening_exp.m" have to be run from here. 
