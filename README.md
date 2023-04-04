@@ -1,8 +1,5 @@
 # ambisonics_param_coding_AES_2023
-Scripts for generating audio and evaluating listening experiment results associated with the paper "A Perceptual Comparison of Parametric Spatial Audio Codings for Binaural Rendering".
-
-## Coding approaches
-The following table gives an overview of spatial audio coding approaches.
+Scripts for generating audio and evaluating listening experiment results associated with the paper "A Perceptual Comparison of Parametric Spatial Audio Codings for Binaural Rendering". The following table gives an overview of spatial audio coding approaches.
 ![Table comparing time-frequency cosings of spatial audio](codings.png)
 
 ## Setup
