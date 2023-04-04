@@ -9,7 +9,7 @@ for reverb = ["anech", "medrev", "strongrev"]
                 
         ref_filepath = "../generate_stimuli/rendered_audio/" + scenario ...
                        + "_" + reverb + "_" + "ref_binau.wav";
-        [xref1, fs] = audioread(ref_filepath);
+        [xref, fs] = audioread(ref_filepath);
         for method = ["mono", "foa", "param1", "param2", ...
                       "foa_amb_param1", "foa_amb_param2", "harpex"]
             if method == "mono"
@@ -21,8 +21,6 @@ for reverb = ["anech", "medrev", "strongrev"]
                            "_binau.wav";
             end
             [xpred, fs] = audioread(filepath);
-            
-            xref = xref1;
             
             [qual, ~, ~, ~] = BAMQ4Public_restruct(xref, xpred, fs);
             rv = [rv; reverb];

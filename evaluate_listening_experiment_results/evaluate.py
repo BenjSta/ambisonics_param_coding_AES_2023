@@ -4,38 +4,38 @@ import numpy as np
 from scipy.stats import t as tdist
 import os
 
-figure_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                          'figures')
+dirname = os.path.dirname(os.path.realpath(__file__))
+figure_dir = os.path.join(dirname, 'figures')
 
 scen_names = [
     'pink_noise', 'drums+saw', 'string_quartet', 'two_speakers', 'speech+noise'
 ]
 rev_names = ['anech', 'medrev', 'strongrev']
+
+# condition names in figures
 condnames = ['M', 'FOA', 'P1', 'P2', 'P1F', 'P2F', 'Harpex', 'R']
+
+# condition names as in the MUSHRA result files
 conds = [
     'Mono', 'FOA', 'Param1', 'Param2', 'FOA-Amb-Param1', 'FOA-Amb-Param2',
     'Harpex', 'reference'
 ]
-rev_scen_names = []
+# condition names differ slightly in the PEMOQ and BAMQ csv files
+conds_pemoq_bamq = [
+    'mono', 'foa', 'param1', 'param2', 'foa_amb_param1', 'foa_amb_param2',
+    'harpex', 'reference_not_computed']
 
-for r in rev_names:
-    for s in scen_names:
-        rev_scen_names.append(r + '_' + s)
-dfbamq = pd.read_csv('C:/Users/p3567/Desktop/webMUSHRA/bamq.csv', delimiter=' ')
-dfbamq.index = rev_scen_names
-#dfbamq = pd.DataFrame(dfbamq, dfbamq.reindex(index=rev_scen_names)
-dfpsmt = pd.read_csv('C:/Users/p3567/Desktop/webMUSHRA/psmt.csv', delimiter=' ')
-dfpsmt.index = rev_scen_names
-#dfpsmt.reindex(index=rev_scen_names, copy=False)
-df = pd.read_csv('evaluate_listening_experiment_results/webmushra_results.csv')
-df['subject'] = np.arange(df.shape[0]) // 104
+df_bamq = pd.read_csv(os.path.join(dirname, '../objective_evaluation/bamq.csv'))
+df_pemoq = pd.read_csv(os.path.join(dirname, '../objective_evaluation/pemoq.csv'))
+df_ratings = pd.read_csv(os.path.join(dirname, 'webmushra_results.csv'))
+df_ratings['subject'] = np.arange(df_ratings.shape[0]) // 104 # 104 rows per subject
 
 plt.rc('font', size=8)
 bamq_color = 'k'
-psmt_color = 'k'
+pemoq_color = 'k'
 rev_colors = ['#42a4f5', '#9c42f5', '#f542b3']
-#plt.figure()
 
+# save mean ratings and metrics for condition to compute R squared
 m_trial_rats_all = []
 m_pemoq_all = []
 m_bamq_all = []
@@ -51,43 +51,43 @@ for scen_ind, scenario in enumerate(scen_names):
     for rev_ind, reverb in enumerate(rev_names):
         TRIAL = scenario + '_' + reverb
         t = TRIAL.replace('+', ' ')
-        subdf = df[df['trial_id'] == t]
+        subdf = df_ratings[df_ratings['trial_id'] == t]
         if len(subdf) > 0:
-            rat_all = []
-            for cond in conds:
+            ratings_trial = []
+            bamq_trial = []
+            pemoq_trial = []
+            df_bamq_trial = df_bamq[(df_bamq['reverberation'] == reverb) & (df_bamq['scenario'] == scenario)]
+            df_pemoq_trial = df_pemoq[(df_pemoq['reverberation'] == reverb) & (df_pemoq['scenario'] == scenario)]
+            for cond, cond_pemoq_bamq in zip(conds, conds_pemoq_bamq):
                 rat = subdf[subdf['rating_stimulus'] == cond]['rating_score']
-                assert np.all((subdf[subdf['rating_stimulus'] == cond]
+                if cond_pemoq_bamq != 'reference_not_computed':
+                    pemoq = df_pemoq_trial['score'][df_pemoq_trial['method'] == cond_pemoq_bamq]
+                    bamq = df_bamq_trial['score'][df_bamq_trial['method'] == cond_pemoq_bamq]
+                    assert len(pemoq) == 1 and len(bamq) == 1, 'something went wrong'
+                    pemoq_trial.append(pemoq.to_numpy()[0])
+                    bamq_trial.append(bamq.to_numpy()[0])
+                    
+                    #assert subject order is preserved
+                    assert np.all((subdf[subdf['rating_stimulus'] == cond]
                                )['subject'].to_numpy() == np.arange(22))
-                rat_all.append(rat)
+                ratings_trial.append(rat)
 
-            trial_rats = np.stack(rat_all, axis=0)
-
-
-
+            ratings_trial = np.stack(ratings_trial, axis=0)
+            bamq_trial = np.stack(bamq_trial, axis=0)
+            pemoq_trial = np.stack(pemoq_trial, axis=0)
+            pemoq_mapped = pemoq_trial * 25 + 100
             
-            bamq_trial = dfbamq.loc[reverb + '_' + scenario].to_numpy()
-
-            psmt_trial = dfpsmt.iloc[scen_ind + rev_ind * 5].to_numpy() / 100
-            psmt_odg = (np.clip(-0.22 / (psmt_trial - 0.98) - 4.13, a_min=-4, a_max=np.Inf) * (psmt_trial < 0.864) + \
-                (16.4 * psmt_trial - 16.4) *  (psmt_trial >= 0.864)) * 25 + 100
-            
-            bamq_trial = dfbamq.iloc[scen_ind + rev_ind * 5].to_numpy()
-
-            m_trial_rats = np.mean(trial_rats[:-1, :], axis=1)
+            m_trial_rats = np.mean(ratings_trial[:-1, :], axis=1)
             m_trial_rats_all.append(m_trial_rats)
-            m_pemoq_all.append(psmt_odg)
+            m_pemoq_all.append(pemoq_mapped)
             m_bamq_all.append(bamq_trial)
             m_reverb_all += 7 * [reverb]
 
-            # rpemo = np.corrcoef(m_trial_rats, psmt_trial)
-            # rbamq = np.corrcoef(m_trial_rats, bamq_trial)
-            # print(scenario, reverb, rpemo[0, 1], rbamq[0, 1])
-
-            for i in range(trial_rats.shape[0]):
-                m = np.median(trial_rats[i, :])
-                me = np.mean(trial_rats[i, :])
-                l = np.quantile(trial_rats[i, :], 0.25)
-                u = np.quantile(trial_rats[i, :], 0.75)
+            for i in range(ratings_trial.shape[0]):
+                m = np.median(ratings_trial[i, :])
+                me = np.mean(ratings_trial[i, :])
+                l = np.quantile(ratings_trial[i, :], 0.25)
+                u = np.quantile(ratings_trial[i, :], 0.75)
 
                 if scenario == 'pink_noise':
                     shift = 1
@@ -95,8 +95,8 @@ for scen_ind, scenario in enumerate(scen_names):
                     shift = rev_ind
 
                 plt.scatter(i + (shift - 1) / 5 +
-                            np.linspace(-0.05, 0.05, trial_rats.shape[1]),
-                            trial_rats[i, :],
+                            np.linspace(-0.05, 0.05, ratings_trial.shape[1]),
+                            ratings_trial[i, :],
                             13,
                             color=rev_colors[rev_ind],
                             alpha=0.2,
@@ -124,9 +124,9 @@ for scen_ind, scenario in enumerate(scen_names):
                                   markerfacecolor='none',
                                   alpha=0.7)
                     h3 = plt.plot(i + (shift - 1) / 5,
-                                  psmt_odg[i],
+                                  pemoq_mapped[i],
                                   'x',
-                                  color=psmt_color,
+                                  color=pemoq_color,
                                   markersize=4.5,
                                   alpha=0.7)
 
@@ -168,17 +168,19 @@ m_bamq_all = np.concatenate(m_bamq_all, axis=0)
 m_trial_rats_all = np.concatenate(m_trial_rats_all, axis=0)
 m_pemoq_all = np.concatenate(m_pemoq_all, axis=0)
 m_reverb_all = np.array(m_reverb_all)
-r_pemoq_total = np.corrcoef(m_trial_rats_all, m_pemoq_all)
-r_bamq_total = np.corrcoef(m_trial_rats_all, m_bamq_all)
-r_pemoq_anech =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'anech'], m_pemoq_all[m_reverb_all == 'anech'])
-r_bamq_anech =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'anech'], m_bamq_all[m_reverb_all == 'anech'])
-r_pemoq_medrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'medrev'], m_pemoq_all[m_reverb_all == 'medrev'])
-r_bamq_medrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'medrev'], m_bamq_all[m_reverb_all == 'medrev'])
-r_pemoq_strongrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'strongrev'], m_pemoq_all[m_reverb_all == 'strongrev'])
-r_bamq_strongrev =  np.corrcoef(m_trial_rats_all[m_reverb_all == 'strongrev'], m_bamq_all[m_reverb_all == 'strongrev'])
 
-
-
+print('anech R squared: PEMOQ: %.2f, BAMQ: %.2f' % (r_sq(m_trial_rats_all[m_reverb_all == 'anech'], 
+                                                         m_pemoq_all[m_reverb_all == 'anech']), 
+                                                    r_sq(m_trial_rats_all[m_reverb_all == 'anech'], 
+                                                         m_bamq_all[m_reverb_all == 'anech'])))
+print('medrev R squared: PEMOQ: %.2f, BAMQ: %.2f' % (r_sq(m_trial_rats_all[m_reverb_all == 'medrev'], 
+                                                         m_pemoq_all[m_reverb_all == 'medrev']), 
+                                                    r_sq(m_trial_rats_all[m_reverb_all == 'medrev'], 
+                                                         m_bamq_all[m_reverb_all == 'medrev'])))
+print('strongrev R squared: PEMOQ: %.2f, BAMQ: %.2f' % (r_sq(m_trial_rats_all[m_reverb_all == 'strongrev'], 
+                                                         m_pemoq_all[m_reverb_all == 'strongrev']), 
+                                                    r_sq(m_trial_rats_all[m_reverb_all == 'strongrev'], 
+                                                         m_bamq_all[m_reverb_all == 'strongrev'])))
 
 YLIM_ABS = [-65, 10]
 YLIM_D = [-1.5, 0.75]
@@ -199,26 +201,26 @@ for scen_ind, scenario in enumerate(scen_names):
     for rev_ind, reverb in enumerate(rev_names):
         TRIAL = scenario + '_' + reverb
         t = TRIAL.replace('+', ' ')
-        subdf = df[df['trial_id'] == t]
+        subdf = df_ratings[df_ratings['trial_id'] == t]
         if len(subdf) > 0:
             rat_all = []
             for cond in conds:
                 rat = subdf[subdf['rating_stimulus'] == cond]['rating_score']
                 rat_all.append(rat)
 
-            trial_rats = np.stack(rat_all, axis=0)
+            ratings_trial = np.stack(rat_all, axis=0)
 
-            trial_rats = trial_rats - trial_rats[np.array(condnames) == 'R', :]
-            trial_rats = trial_rats / np.std(trial_rats, axis=1, ddof=1)[:,
+            ratings_trial = ratings_trial - ratings_trial[np.array(condnames) == 'R', :]
+            ratings_trial = ratings_trial / np.std(ratings_trial, axis=1, ddof=1)[:,
                                                                          None]
             for i in SUBRANGE_COND_INDICES:
-                m = np.mean(trial_rats[i, :])
+                m = np.mean(ratings_trial[i, :])
                 #s = np.std(trial_rats[i, :])
-                l = np.quantile(trial_rats[i, :], 0.25)  #m - s
-                u = np.quantile(trial_rats[i, :], 0.75)  #m + s
+                l = np.quantile(ratings_trial[i, :], 0.25)  #m - s
+                u = np.quantile(ratings_trial[i, :], 0.75)  #m + s
 
-                tppf = tdist.ppf(0.975, trial_rats.shape[1] - 1)
-                er = tppf / np.sqrt(trial_rats.shape[1])
+                tppf = tdist.ppf(0.975, ratings_trial.shape[1] - 1)
+                er = tppf / np.sqrt(ratings_trial.shape[1])
 
                 signif = m + er < 0
 
@@ -264,7 +266,7 @@ for scen_ind, scenario in enumerate(scen_names):
     for rev_ind, reverb in enumerate(rev_names):
         TRIAL = scenario + '_' + reverb
         t = TRIAL.replace('+', ' ')
-        subdf = df[df['trial_id'] == t]
+        subdf = df_ratings[df_ratings['trial_id'] == t]
         if len(subdf) > 0:
             rat_all = []
 
@@ -274,31 +276,31 @@ for scen_ind, scenario in enumerate(scen_names):
                                )['subject'].to_numpy() == np.arange(22))
                 rat_all.append(rat)
 
-            trial_rats = np.stack(rat_all, axis=0)
+            ratings_trial = np.stack(rat_all, axis=0)
 
-            trial_rats = trial_rats - trial_rats[np.array(condnames) == 'R', :]
-            trial_rats = trial_rats
+            ratings_trial = ratings_trial - ratings_trial[np.array(condnames) == 'R', :]
+            ratings_trial = ratings_trial
             for i in SUBRANGE_COND_INDICES:
-                me = np.mean(trial_rats[i, :])
-                m = np.median(trial_rats[i, :])
-                l = np.quantile(trial_rats[i, :], 0.25)
-                u = np.quantile(trial_rats[i, :], 0.75)
+                me = np.mean(ratings_trial[i, :])
+                m = np.median(ratings_trial[i, :])
+                l = np.quantile(ratings_trial[i, :], 0.25)
+                u = np.quantile(ratings_trial[i, :], 0.75)
 
-                tppf = tdist.ppf(0.975, trial_rats.shape[1] - 1)
-                er = tppf / np.sqrt(trial_rats.shape[1])
+                tppf = tdist.ppf(0.975, ratings_trial.shape[1] - 1)
+                er = tppf / np.sqrt(ratings_trial.shape[1])
 
                 signif = m + er < 0
 
                 bamq_color = 'k'
-                psmt_color = 'k'
+                pemoq_color = 'k'
                 if scenario == 'pink_noise':
                     shift = 1
                 else:
                     shift = rev_ind
 
                 plt.scatter(i + (shift - 1) / 5 +
-                            np.linspace(-0.05, 0.05, trial_rats.shape[1]),
-                            trial_rats[i, :],
+                            np.linspace(-0.05, 0.05, ratings_trial.shape[1]),
+                            ratings_trial[i, :],
                             15,
                             color=rev_colors[rev_ind],
                             alpha=0.2,
@@ -374,7 +376,7 @@ for comparison_labels in COMPARISON_LABELS_ALL:
         for rev_ind, reverb in enumerate(rev_names):
             TRIAL = scenario + '_' + reverb
             t = TRIAL.replace('+', ' ')
-            subdf = df[df['trial_id'] == t]
+            subdf = df_ratings[df_ratings['trial_id'] == t]
             if len(subdf) > 0:
                 rat_all = []
                 for cond in conds:
@@ -384,12 +386,12 @@ for comparison_labels in COMPARISON_LABELS_ALL:
                                    )['subject'].to_numpy() == np.arange(22))
                     rat_all.append(rat)
 
-                trial_rats = np.stack(rat_all, axis=0)
+                ratings_trial = np.stack(rat_all, axis=0)
 
                 
 
-                comparison = (trial_rats[np.array(condnames) == comparison_labels[0], :] - \
-                    trial_rats[np.array(condnames) == comparison_labels[1], :])[0, :]
+                comparison = (ratings_trial[np.array(condnames) == comparison_labels[0], :] - \
+                    ratings_trial[np.array(condnames) == comparison_labels[1], :])[0, :]
 
                 me = np.mean(comparison)
                 m = np.median(comparison)

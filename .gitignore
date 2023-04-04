@@ -9,4 +9,8 @@ vst_plugins/*
 objective_evaluation/pemo-q
 !objective_evaluation/pemo-q/README.md
 !objective_evaluation/pemo-q/compute_psm_t.m
+evaluate_listening_experiment_results/figures/*
+!evaluate_listening_experiment_results/figures/README.md
+*.asv
+
 
