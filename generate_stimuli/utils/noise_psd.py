@@ -1,3 +1,5 @@
+# from https://stackoverflow.com/questions/67085963/generate-colors-of-noise-in-python
+
 import numpy as np
 import matplotlib.pyplot as plt
 
