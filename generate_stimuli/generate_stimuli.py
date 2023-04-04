@@ -209,15 +209,20 @@ def generate_trial(source_signals,
 
     if harpex is not None:
         hoa_harpex = harpex.process(foa * 10**((1.5 / 20)))
-        soundfile.write(out_path_name_prefix + '_harpex_amb.wav',
-                        hoa_harpex,
-                        fs,
-                        subtype='PCM_24')
-        hoa_harpex_binaural = binaural_decode(hoa_harpex, fs, HRIR_PATH)
-        soundfile.write(out_path_name_prefix + '_harpex_binau.wav',
-                        hoa_harpex_binaural,
-                        fs,
-                        subtype='PCM_24')
+    else:
+        hoa_harpex = 0 * hoa
+        
+    soundfile.write(out_path_name_prefix + '_harpex_amb.wav',
+                    hoa_harpex,
+                    fs,
+                    subtype='PCM_24')
+
+
+    hoa_harpex_binaural = binaural_decode(hoa_harpex, fs, HRIR_PATH)
+    soundfile.write(out_path_name_prefix + '_harpex_binau.wav',
+                    hoa_harpex_binaural,
+                    fs,
+                    subtype='PCM_24')
 
 
 if __name__ == '__main__':
@@ -226,10 +231,12 @@ if __name__ == '__main__':
     HRIR_PATH_FOA = 'mag_ls_binaural_decoder_weights/irsOrd1.wav'
     HRIR_PATH = 'mag_ls_binaural_decoder_weights/irsOrd3.wav'
     ROOM_SIM_MIN_IMAGE_ORDER = 2
-    AMB_ORDER = 11
+    AMB_ORDER = 3
 
-    harpex = HarpexUpmixerWrapper(FS, 'vst_plugins/Harpex-X.dll')
-    #harpex = None
+    harpex = None
+    # uncomment the following line to compute Harpex
+    # harpex = HarpexUpmixerWrapper(FS, 'vst_plugins/Harpex-X.dll') #uncomment if you want to process harpex
+    
 
     main_room = np.array([7, 6, 3.5])
     listener_pos = np.array([3.5, 4, 1.5])
@@ -306,6 +313,6 @@ if __name__ == '__main__':
                 directions = np.pi / 180 * np.array([[-135, 90], [-45, 120],
                                                      [45, 70], [135, 100]]).T
 
-            generate_trial(signals, 'rendered_audio_o11/' + name, directions, room,
+            generate_trial(signals, 'rendered_audio/' + name, directions, room,
                            t60, drr, listener_pos, normalise_db, FS, AMB_ORDER,
                            harpex)

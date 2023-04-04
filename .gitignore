@@ -6,9 +6,9 @@ generate_stimuli/source_audio/ebu_sqam/*
 generate_stimuli/vst_plugins/Harpex-X.dll
 vst_plugins/*
 !vst_plugins/README.md
-objective_evaluation/pemo-q
+objective_evaluation/pemo-q/*
+!objective_evaluation/pemo-q/compute_pemoq_odg.m
 !objective_evaluation/pemo-q/README.md
-!objective_evaluation/pemo-q/compute_psm_t.m
 evaluate_listening_experiment_results/figures/*
 !evaluate_listening_experiment_results/figures/README.md
 *.asv

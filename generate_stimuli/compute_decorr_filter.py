@@ -1,5 +1,4 @@
 import librosa
-import sounddevice
 import spaudiopy
 import numpy as np
 import soundfile
@@ -7,7 +6,6 @@ import scipy.signal as signal
 from generate_stimuli import binaural_decode
 
 FS = 44100
-PLAYBACK_DECORR_NOISE = False
 WRITE_FILTERS = False
 ORDER = 3
 DECODER_FILTER_PATH = 'mag_ls_binaural_decoder_weights/irsOrd3.wav'
@@ -80,12 +78,6 @@ test_noise_decorr_binaural_eq = binaural_decode(test_noise_decorr_eq, FS,
                                                 DECODER_FILTER_PATH)
 test_noise_decorr_binaural_no_eq = binaural_decode(test_noise_decorr_no_eq, FS,
                                                    DECODER_FILTER_PATH)
-
-# play back the filtered noise
-if PLAYBACK_DECORR_NOISE:
-    sounddevice.play(test_noise_binaural, FS, blocking=True)
-    sounddevice.play(test_noise_decorr_binaural_eq, FS, blocking=True)
-    sounddevice.play(test_noise_decorr_binaural_no_eq, FS, blocking=True)
 
 # write to file
 if WRITE_FILTERS:

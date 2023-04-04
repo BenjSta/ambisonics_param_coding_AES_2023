@@ -215,10 +215,6 @@ for scen_ind, scenario in enumerate(scen_names):
                                                                          None]
             for i in SUBRANGE_COND_INDICES:
                 m = np.mean(ratings_trial[i, :])
-                #s = np.std(trial_rats[i, :])
-                l = np.quantile(ratings_trial[i, :], 0.25)  #m - s
-                u = np.quantile(ratings_trial[i, :], 0.75)  #m + s
-
                 tppf = tdist.ppf(0.975, ratings_trial.shape[1] - 1)
                 er = tppf / np.sqrt(ratings_trial.shape[1])
 
@@ -285,11 +281,6 @@ for scen_ind, scenario in enumerate(scen_names):
                 m = np.median(ratings_trial[i, :])
                 l = np.quantile(ratings_trial[i, :], 0.25)
                 u = np.quantile(ratings_trial[i, :], 0.75)
-
-                tppf = tdist.ppf(0.975, ratings_trial.shape[1] - 1)
-                er = tppf / np.sqrt(ratings_trial.shape[1])
-
-                signif = m + er < 0
 
                 bamq_color = 'k'
                 pemoq_color = 'k'

@@ -1,7 +1,10 @@
+numba
+matplotlib
 numpy
+scipy
 librosa
 pyroomacoustics
 soundfile
-sounddevice
 spaudiopy
 dawdreamer
+pandas

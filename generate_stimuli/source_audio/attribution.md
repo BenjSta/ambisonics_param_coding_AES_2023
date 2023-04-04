@@ -8,7 +8,7 @@ obtained from https://zenodo.org/record/4955282#.Y2zTq3bMJaR
 Files in "./musdb_bks_bulldozer" are modified (use only channel 0 (0-based) and cut (second 244..246.5)) from
 the song "BKS - Bulldozer"
 
-Z. Rafii, A. Liutkus, F.-R. St ̈oter, S. I. Mimilakis, and R. Bittner,
+Z. Rafii, A. Liutkus, F.-R. Stöter, S. I. Mimilakis, and R. Bittner,
 “MUSDB18-HQ - an uncompressed version of musdb18,” Dec. 2019.
 [Online]. Available: https://doi.org/10.5281/zenodo.3338373
 

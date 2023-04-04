@@ -12,7 +12,7 @@ class HarpexUpmixerWrapper():
         self.fs = fs
         self.harpex_plugin = \
             self.engine.make_plugin_processor("harpex", plugin_path)
-        print('Please verify settings and close window')
+        print('Please verify settings and close window. Make sure to set input and output format to Ambix.')
         self.harpex_plugin.open_editor()
 
     def process(self, foa): 

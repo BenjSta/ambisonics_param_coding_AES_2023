@@ -52,13 +52,14 @@ def simulate_simple_room(rt60,
     surface = 2 * (room_dim[0] * room_dim[1] + room_dim[0] * room_dim[2] +
                    room_dim[1] * room_dim[2])
 
-    # number of refelctions to estimate reverberation gain
+    # number of reflections to estimate reverberation gain
     DIFFUSE_VARIANCE_EST_NUM_REFL = 25
     absorbing_surface = absorption_coeff * surface
     distance_of_drr_1 = np.sqrt(absorbing_surface / (24 * np.log(10)))
 
     # compute radius from drr
     radius = np.sqrt(distance_of_drr_1**2 / 10**(drr_db / 10))
+    print('Distance: %.2f' % radius)
 
     t = np.arange(int(fs * rt60)) / fs
     reverberation_rms = 10**(-60 / 20 * (t - maxdelay_discrete) / rt60)
@@ -81,7 +82,6 @@ def simulate_simple_room(rt60,
 
     src_pos = receiver_pos[None, :] + \
         sph2cart(radius, directions[0, :], directions[1, :])
-    print(src_pos)
     for s in range(src_pos.shape[0]):
         room.add_source(src_pos[s, :])
 
@@ -116,8 +116,6 @@ def simulate_simple_room(rt60,
 
         if i == 0:
             # from the first source, estimate the gain of the late reverberation
-            print(delays[0].shape)
-            print(DIFFUSE_VARIANCE_EST_NUM_REFL)
             ord = np.argsort(delays[0])
             start = delays[0][ord[DIFFUSE_VARIANCE_EST_NUM_REFL - 1]]
             dur = maxdelay_discrete * fs - start

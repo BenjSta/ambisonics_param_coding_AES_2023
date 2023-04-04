@@ -1,9 +1,15 @@
 
 if __name__ == '__main__':
     import requests, zipfile, io, os, soundfile, shutil
+    print('This script downloads the EBU SQAM audio files from ' +
+          'https://tech.ebu.ch/files/live/sites/tech/files/shared/testmaterial/SQAM_FLAC.zip. ' +
+          'Only proceed if you have the rights to download these audio files. Confirm with "y" to proceed.')
+    i = input()
+    assert i.lower() == 'y', 'Download was not confirmed.'
+    
     my_tmpdir = 'tmp_download_and_cut_sqam'
     os.mkdir(my_tmpdir)
-    print('Downloading EBU SQAM material ...')
+    print('Downloading EBU SQAM audio files ...')
     r = requests.get('https://tech.ebu.ch/files/live/sites/tech/files/shared/testmaterial/SQAM_FLAC.zip')
     z = zipfile.ZipFile(io.BytesIO(r.content))
     z.extractall(my_tmpdir)
