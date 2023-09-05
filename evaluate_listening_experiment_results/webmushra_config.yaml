@@ -1,0 +1,306 @@
+testname: Listening experiment on optimal parametric ambisonics
+testId: param_amb
+bufferSize: 512
+stopOnErrors: true
+showButtonPreviousPage: true
+remoteService: service/write.php
+
+
+pages:
+    - type: generic
+      id: first_page
+      name: Welcome to our experiment on parametric ambisonic coding techniques!
+      content: <p>Please rate the similarity of stimuli to the reference with respect to source localization, perceived distance, timbre, and freedom of artifacts. 
+        Please use high-quality headphones. </p> <p>Make sure that no additional output audio processing by your audio driver is enabled. Please adjust the playback level, so you can hear details.</p>
+        </p> You can use number keys 1..8 and R to play back stimuli and reference, respectively. </p> 
+    
+    -
+      - random
+      - type: mushra
+        id: pink_noise_anech
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/pink_noise_anech_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/pink_noise_anech_mono.wav
+            FOA: configs/resources/audio/pink_noise_anech_foa_binau.wav
+            Param1: configs/resources/audio/pink_noise_anech_param1_binau.wav
+            Param2: configs/resources/audio/pink_noise_anech_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/pink_noise_anech_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/pink_noise_anech_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/pink_noise_anech_harpex_binau.wav
+    
+      - type: mushra
+        id: drums+saw_anech
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/drums+saw_anech_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/drums+saw_anech_mono.wav
+            FOA: configs/resources/audio/drums+saw_anech_foa_binau.wav
+            Param1: configs/resources/audio/drums+saw_anech_param1_binau.wav
+            Param2: configs/resources/audio/drums+saw_anech_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/drums+saw_anech_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/drums+saw_anech_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/drums+saw_anech_harpex_binau.wav
+
+
+      - type: mushra
+        id: string_quartet_anech
+        name: 
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/string_quartet_anech_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/string_quartet_anech_mono.wav
+            FOA: configs/resources/audio/string_quartet_anech_foa_binau.wav
+            Param1: configs/resources/audio/string_quartet_anech_param1_binau.wav
+            Param2: configs/resources/audio/string_quartet_anech_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/string_quartet_anech_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/string_quartet_anech_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/string_quartet_anech_harpex_binau.wav
+
+      - type: mushra
+        id: two_speakers_anech
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/two_speakers_anech_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/two_speakers_anech_mono.wav
+            FOA: configs/resources/audio/two_speakers_anech_foa_binau.wav
+            Param1: configs/resources/audio/two_speakers_anech_param1_binau.wav
+            Param2: configs/resources/audio/two_speakers_anech_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/two_speakers_anech_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/two_speakers_anech_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/two_speakers_anech_harpex_binau.wav
+
+      - type: mushra
+        id: speech+noise_anech
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/speech+noise_anech_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/speech+noise_anech_mono.wav
+            FOA: configs/resources/audio/speech+noise_anech_foa_binau.wav
+            Param1: configs/resources/audio/speech+noise_anech_param1_binau.wav
+            Param2: configs/resources/audio/speech+noise_anech_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/speech+noise_anech_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/speech+noise_anech_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/speech+noise_anech_harpex_binau.wav
+
+      - type: mushra
+        id: drums+saw_medrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/drums+saw_medrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/drums+saw_medrev_mono.wav
+            FOA: configs/resources/audio/drums+saw_medrev_foa_binau.wav
+            Param1: configs/resources/audio/drums+saw_medrev_param1_binau.wav
+            Param2: configs/resources/audio/drums+saw_medrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/drums+saw_medrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/drums+saw_medrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/drums+saw_medrev_harpex_binau.wav
+
+      - type: mushra
+        id: string_quartet_medrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/string_quartet_medrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/string_quartet_medrev_mono.wav
+            FOA: configs/resources/audio/string_quartet_medrev_foa_binau.wav
+            Param1: configs/resources/audio/string_quartet_medrev_param1_binau.wav
+            Param2: configs/resources/audio/string_quartet_medrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/string_quartet_medrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/string_quartet_medrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/string_quartet_medrev_harpex_binau.wav
+
+      - type: mushra
+        id: two_speakers_medrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/two_speakers_medrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/two_speakers_medrev_mono.wav
+            FOA: configs/resources/audio/two_speakers_medrev_foa_binau.wav
+            Param1: configs/resources/audio/two_speakers_medrev_param1_binau.wav
+            Param2: configs/resources/audio/two_speakers_medrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/two_speakers_medrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/two_speakers_medrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/two_speakers_medrev_harpex_binau.wav
+
+      - type: mushra
+        id: speech+noise_medrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/speech+noise_medrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/speech+noise_medrev_mono.wav
+            FOA: configs/resources/audio/speech+noise_medrev_foa_binau.wav
+            Param1: configs/resources/audio/speech+noise_medrev_param1_binau.wav
+            Param2: configs/resources/audio/speech+noise_medrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/speech+noise_medrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/speech+noise_medrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/speech+noise_medrev_harpex_binau.wav
+
+      - type: mushra
+        id: drums+saw_strongrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/drums+saw_strongrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/drums+saw_strongrev_mono.wav
+            FOA: configs/resources/audio/drums+saw_strongrev_foa_binau.wav
+            Param1: configs/resources/audio/drums+saw_strongrev_param1_binau.wav
+            Param2: configs/resources/audio/drums+saw_strongrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/drums+saw_strongrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/drums+saw_strongrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/drums+saw_strongrev_harpex_binau.wav
+
+      - type: mushra
+        id: string_quartet_strongrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/string_quartet_strongrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/string_quartet_strongrev_mono.wav
+            FOA: configs/resources/audio/string_quartet_strongrev_foa_binau.wav
+            Param1: configs/resources/audio/string_quartet_strongrev_param1_binau.wav
+            Param2: configs/resources/audio/string_quartet_strongrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/string_quartet_strongrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/string_quartet_strongrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/string_quartet_strongrev_harpex_binau.wav
+
+      - type: mushra
+        id: two_speakers_strongrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/two_speakers_strongrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/two_speakers_strongrev_mono.wav
+            FOA: configs/resources/audio/two_speakers_strongrev_foa_binau.wav
+            Param1: configs/resources/audio/two_speakers_strongrev_param1_binau.wav
+            Param2: configs/resources/audio/two_speakers_strongrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/two_speakers_strongrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/two_speakers_strongrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/two_speakers_strongrev_harpex_binau.wav
+
+      - type: mushra
+        id: speech+noise_strongrev
+        name:
+        content: 
+        showWaveform: false
+        enableLooping: false
+        switchBack: true
+        reference: configs/resources/audio/speech+noise_strongrev_ref_binau.wav
+        randomize: true
+        showConditionNames: false
+        stimuli:
+            Mono: configs/resources/audio/speech+noise_strongrev_mono.wav
+            FOA: configs/resources/audio/speech+noise_strongrev_foa_binau.wav
+            Param1: configs/resources/audio/speech+noise_strongrev_param1_binau.wav
+            Param2: configs/resources/audio/speech+noise_strongrev_param2_binau.wav
+            FOA-Amb-Param1: configs/resources/audio/speech+noise_strongrev_foa_amb_param1_binau.wav
+            FOA-Amb-Param2: configs/resources/audio/speech+noise_strongrev_foa_amb_param2_binau.wav
+            Harpex: configs/resources/audio/speech+noise_strongrev_harpex_binau.wav
+
+
+
+
+    - type: finish
+      name: Thank you
+      content: Thank you for attending, please also answer the questionnaire below.
+      popupContent: Your results were sent. Goodbye and have a nice day
+      showResults: false
+      writeResults: true
+      questionnaire:
+          - type: text
+            label: Age
+            name: age
+          - type: text
+            name: gender
+            label: Gender
+          - type: likert
+            name: num_mushra
+            label: How many MUSHRA listening experiments have you participated in before?
+            response:
+             - value: zero
+               label: zero
+             - value: one
+               label: one
+             - value: two_to_five
+               label: two to five
+             - value: more_than_five
+               label: more than five
+          - type: likert
+            name: num_spatial
+            label: How many listening experiments on spatial audio have you participated in before?
+            response:
+             - value: zero
+               label: zero
+             - value: one
+               label: one
+             - value: two_to_five
+               label: two to five
+             - value: more_than_five
+               label: more than five
